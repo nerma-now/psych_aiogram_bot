@@ -1,0 +1,64 @@
+services:
+  redis:
+    image: redis:7.4
+    container_name: redis
+    hostname: redis
+    restart: unless-stopped
+    ports:
+      - "6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - my_network
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  postgres:
+    image: postgres:17.4
+    container_name: postgres
+    hostname: postgres
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/pgdata
+    env_file:
+      - .env
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_PASSWORD: ${CONFIG__DATABASE__PASSWORD}
+      POSTGRES_USER: ${CONFIG__DATABASE__USER}
+      POSTGRES_DB: ${CONFIG__DATABASE__DATABASE}
+    ports:
+      - "5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${CONFIG__DATABASE__USER} -d ${CONFIG__DATABASE__DATABASE}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - my_network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  my_network:
+    driver: bridge
