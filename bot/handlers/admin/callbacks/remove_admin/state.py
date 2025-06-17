@@ -13,31 +13,34 @@ from infrastructure.database.models import User
 from .state_factory import RemoveAdminState
 
 from bot.filters import IsAdmin, IsSuperadmin
-from bot.handlers.exception_factory import (WrongTypeException,
-                                            NotFoundException,
-                                            DuplicativeActionException,
-                                            NotRightsException)
-
-
-router: Router = Router(
-    name=__name__
+from bot.handlers.exception_factory import (
+    WrongTypeException,
+    NotFoundException,
+    DuplicativeActionException,
+    NotRightsException,
+    OneSelfException,
 )
 
+
+router: Router = Router(name=__name__)
+
+
 @router.message(RemoveAdminState.telegram_id, IsAdmin(), IsSuperadmin())
-async def set_admin_state(
-    message: Message,
-    state: FSMContext,
-    database: AsyncSession
+async def remove_admin_state(
+    message: Message, state: FSMContext, database: AsyncSession
 ):
     if not isinstance(message.text, str) or not message.text.isdigit():
         await state.clear()
 
         raise WrongTypeException()
 
+    if int(message.text) == message.from_user.id:
+        await state.clear()
+
+        raise OneSelfException()
+
     user: Optional[User] = await UserRepository().get(
-        session=database,
-        target=User.telegram_id,
-        value=int(message.text)
+        session=database, target=User.telegram_id, value=int(message.text)
     )
 
     if not user:
@@ -55,14 +58,11 @@ async def set_admin_state(
 
         raise NotRightsException()
 
-    await UserRepository().update(
-        session=database,
-        instance=user,
-        is_admin=False
-    )
+    await UserRepository().update(session=database, instance=user, is_admin=False)
 
-    await message.answer(_('success'))
+    await message.answer(_("success"))
 
     await state.clear()
 
-__all__ = ['router']
+
+__all__ = ["router"]

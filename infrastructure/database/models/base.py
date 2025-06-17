@@ -7,8 +7,7 @@ from bot.config import config
 class Base(DeclarativeBase):
     __abstract__ = True
 
-    metadata = MetaData(
-        naming_convention=config.database.naming_convention
-    )
+    metadata = MetaData(naming_convention=config.database.naming_convention)
 
-__all__ = ['Base']
+
+__all__ = ["Base"]

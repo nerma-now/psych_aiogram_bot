@@ -1,6 +1,8 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
+from typing import Optional
+
 from bot.config.constants import ENV_FILE_PATH
 from bot.config.components import (RedisConfig,
                                    DatabaseConfig,
@@ -13,6 +15,9 @@ class BotConfig(BaseSettings):
     token: str = Field(default='<TOKEN>')
     parse_mode: str = Field(default='HTML')
     use_cache: bool = Field(default=True)
+
+    description: Optional[str] = Field(default='Психологический бот')
+    short_description: Optional[str] = Field(default='Психологический бот')
 
     i18n: I18NConfig = I18NConfig()
     redis: RedisConfig = RedisConfig()

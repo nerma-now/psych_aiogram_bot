@@ -12,6 +12,10 @@ class AbstractRepository(ABC):
     @abstractmethod
     def delete(self, *args, **kwargs):
         raise NotImplementedError
+    
+    @abstractmethod
+    def modify(self, *args, **kwargs):
+        raise NotImplementedError
 
     @abstractmethod
     async def send(self, *args, **kwargs):

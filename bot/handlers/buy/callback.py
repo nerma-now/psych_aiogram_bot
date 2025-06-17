@@ -11,7 +11,7 @@ from .exception_factory import SubscriptionActiveException
 
 from bot.config import config
 from bot.loader import BotLoader
-from bot.filters import ExistUser, IsActivated
+from bot.filters import ExistUser
 from bot.handlers.exception_factory import NotFoundException
 
 from infrastructure.database.crud import SubscriptionPlanRepository, SubscriptionRepository
@@ -22,7 +22,7 @@ router: Router = Router(
     name=__name__
 )
 
-@router.callback_query(BuyCallback.filter(), ExistUser(), IsActivated())
+@router.callback_query(BuyCallback.filter(), ExistUser())
 async def buy_callback(
     query: CallbackQuery,
     callback_data: BuyCallback,

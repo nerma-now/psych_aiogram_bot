@@ -1,5 +1,5 @@
 from aiogram.filters.callback_data import CallbackData
 
 
-class NextCallbackData(CallbackData, prefix='next'):
-    pass
+class StartNextCallback(CallbackData, prefix="start_next"):
+    job_id: str

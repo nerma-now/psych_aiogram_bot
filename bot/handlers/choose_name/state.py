@@ -3,9 +3,12 @@ from typing import Optional
 
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.utils.i18n import gettext as _
 
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from bot.handlers.test.callback_factory import TestChooseCallback, TestAboutCallback
 
 from infrastructure.database.crud import UserRepository
 from infrastructure.database.models import User
@@ -17,6 +20,7 @@ from .exception_factory import WrongNameException
 router: Router = Router(
     name=__name__
 )
+
 
 @router.message(ChooseNameState.name)
 async def choose_name_state(
@@ -39,5 +43,24 @@ async def choose_name_state(
     )
 
     await state.clear()
+
+    await message.answer(
+        _("name_received").format(name=message.text),
+        reply_markup=InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text=_("about_test_keyboard"),
+                        callback_data=TestAboutCallback().pack(),
+                    ),
+                    InlineKeyboardButton(
+                        text=_("start_now_keyboard"),
+                        callback_data=TestChooseCallback(answer=-1, job_id="0").pack(),
+                    ),
+                ]
+            ]
+        ),
+    )
+
 
 __all__ = ['router']

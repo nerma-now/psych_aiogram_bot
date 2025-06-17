@@ -9,4 +9,5 @@ from infrastructure.database.models import SubscriptionPlan
 class SubscriptionPlanRepository(BaseRepository[SubscriptionPlan]):
     model = SubscriptionPlan
 
-__all__ = ['SubscriptionPlanRepository']
+
+__all__ = ["SubscriptionPlanRepository"]

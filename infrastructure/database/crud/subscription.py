@@ -14,9 +14,7 @@ class SubscriptionRepository(BaseRepository[Subscription]):
     model = Subscription
 
     async def get_active(
-        self,
-        session: AsyncSession,
-        telegram_id: int
+        self, session: AsyncSession, telegram_id: int
     ) -> Optional[model]:
         result: Result = await session.execute(
             Select(self.model).where(
@@ -24,15 +22,23 @@ class SubscriptionRepository(BaseRepository[Subscription]):
                     self.model.telegram_id == telegram_id,
                     self.model.is_activated == True,
                     self.model.canceled_at == None,
-                    or_(
-                        self.model.end_at > func.now()
-                    )
+                    or_(self.model.end_at > func.now()),
                 )
             )
         )
 
         return result.scalar_one_or_none()
 
+    async def get_last(
+        self, session: AsyncSession, target: InstrumentedAttribute[Any], value: Any
+    ) -> Optional[model]:
+        result: Result = await session.execute(
+            Select(self.model)
+            .where(target == value)
+            .order_by(self.model.created_at.desc())
+            .limit(1)
+        )
+        return result.scalar_one_or_none()
 
     async def get_count(
         self,
@@ -40,8 +46,8 @@ class SubscriptionRepository(BaseRepository[Subscription]):
         target: Optional[InstrumentedAttribute[Any]] = None,
         value: Optional[Any] = None,
         time_period: Optional[timedelta] = None,
-        only_active: bool = True,
-    ):
+        only_active: bool = False,
+    ) -> Optional[int]:
         if target is not None:
             if value is not None:
                 stmt = select(func.count()).where(target == value)
@@ -53,9 +59,7 @@ class SubscriptionRepository(BaseRepository[Subscription]):
         stmt = stmt.select_from(self.model)
 
         if time_period is not None:
-            stmt = stmt.where(
-                self.model.created_at >= datetime.now() - time_period
-            )
+            stmt = stmt.where(self.model.created_at >= datetime.now() - time_period)
 
         if only_active:
             stmt = stmt.where(self.model.is_activated == True)
@@ -63,4 +67,5 @@ class SubscriptionRepository(BaseRepository[Subscription]):
         result = await session.execute(stmt)
         return result.scalar()
 
-__all__ = ['SubscriptionRepository']
+
+__all__ = ["SubscriptionRepository"]

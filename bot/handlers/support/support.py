@@ -1,20 +1,16 @@
 from aiogram import Router, F
-from aiogram.filters import Command
 from aiogram.types import Message
 from aiogram.utils.i18n import gettext as _
 
+from bot.filters import TextOrCommandFilter
 
-router: Router = Router(
-    name=__name__
-)
 
-@router.message(F.text.func(lambda text: text == _('menu_help_keyboard')))
+router: Router = Router(name=__name__)
+
+
+@router.message(TextOrCommandFilter(text_key="menu_help_keyboard", command="support"))
 async def support_command(message: Message):
-    await message.answer(_('support'))
-
-@router.message(Command('support'))
-async def support_command(message: Message):
-    await message.answer(_('support'))
+    await message.answer(_("support"))
 
 
-__all__ = ['router']
+__all__ = ["router"]

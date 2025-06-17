@@ -7,6 +7,8 @@ from .buy import router as buy_router
 router: Router = Router(
     name=__name__
 )
+
+
 router.include_router(exception_router)
 router.include_router(callback_router)
 router.include_router(buy_router)

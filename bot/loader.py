@@ -72,6 +72,7 @@ class BaseBotLoader(ABC):
     def scheduler(self, *args, **kwargs) -> BaseScheduler:
         raise NotImplementedError
 
+
 class BotLoader(BaseBotLoader):
     @property
     def bot(self) -> Bot:
@@ -80,9 +81,7 @@ class BotLoader(BaseBotLoader):
 
         bot: Bot = Bot(
             token=config.token,
-            default=DefaultBotProperties(
-                parse_mode=config.parse_mode
-            )
+            default=DefaultBotProperties(parse_mode=config.parse_mode),
         )
 
         self._bot = bot
@@ -96,10 +95,7 @@ class BotLoader(BaseBotLoader):
 
         if config.use_cache:
             storage: RedisStorage = RedisStorage(
-                redis=cache.redis,
-                key_builder=DefaultKeyBuilder(
-                    with_bot_id=True
-                )
+                redis=cache.redis, key_builder=DefaultKeyBuilder(with_bot_id=True)
             )
 
             self._storage = storage
@@ -121,9 +117,7 @@ class BotLoader(BaseBotLoader):
         )
 
         ConstI18nMiddleware(
-            locale=config.i18n.default_locale,
-            i18n=self.i18n,
-            middleware_key='i18n'
+            locale=config.i18n.default_locale, i18n=self.i18n, middleware_key="i18n"
         ).setup(dispatcher)
 
         self._dispatcher = dispatcher
@@ -133,10 +127,10 @@ class BotLoader(BaseBotLoader):
     @property
     def logging(self) -> Dict[str, Any]:
         return {
-            'level': 'DEBUG' if config.debug else 'INFO',
-            'format': '%(name)s | %(asctime)s | %(levelname)s | %(message)s',
-            'datefmt': "%Y-%m-%d %H:%M:%S",
-            'stream': sys.stdout
+            "level": "DEBUG" if config.debug else "INFO",
+            "format": "%(name)s | %(asctime)s | %(levelname)s | %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+            "stream": sys.stdout,
         }
 
     @property
@@ -158,9 +152,7 @@ class BotLoader(BaseBotLoader):
         if self._router is not None:
             return self._router
 
-        router: Router = Router(
-            name=__name__
-        )
+        router: Router = Router(name=__name__)
 
         from bot.handlers import router as handlers_router
 
@@ -184,7 +176,7 @@ class BotLoader(BaseBotLoader):
                     port=config.redis.port,
                     password=config.redis.password,
                     encoding=config.redis.encoding,
-                    db=config.redis.database
+                    db=config.redis.database,
                 )
             )
             scheduler.start()
@@ -193,13 +185,12 @@ class BotLoader(BaseBotLoader):
 
             return scheduler
 
-        scheduler.add_jobstore(
-            jobstore=MemoryJobStore()
-        )
+        scheduler.add_jobstore(jobstore=MemoryJobStore())
         scheduler.start()
 
         self._scheduler = scheduler
 
         return scheduler
 
-__all__ = ['BotLoader']
+
+__all__ = ["BotLoader"]

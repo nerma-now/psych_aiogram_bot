@@ -4,14 +4,15 @@ from typing import Type, TypeVar, Generic, Optional
 from sqlalchemy.orm import DeclarativeBase
 
 
-T: TypeVar = TypeVar('T', bound=DeclarativeBase)
+T: TypeVar = TypeVar("T", bound=DeclarativeBase)
+
 
 class AbstractRepository(ABC, Generic[T]):
     model: Type[T]
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
-        if not hasattr(cls, 'model') or cls.model is None:
+        if not hasattr(cls, "model") or cls.model is None:
             raise TypeError(f'{cls.__name__} must define "model" class attribute')
 
     @abstractmethod
@@ -34,4 +35,5 @@ class AbstractRepository(ABC, Generic[T]):
     async def delete(self, *args, **kwargs):
         raise NotImplementedError()
 
-__all__ = ['AbstractRepository', 'T']
+
+__all__ = ["AbstractRepository", "T"]

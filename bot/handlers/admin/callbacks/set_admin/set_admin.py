@@ -9,20 +9,14 @@ from .state_factory import SetAdminState
 from bot.handlers.admin.callback_factory import SetAdminCallback
 
 
-router: Router = Router(
-    name=__name__
-)
+router: Router = Router(name=__name__)
+
 
 @router.callback_query(SetAdminCallback.filter(), IsAdmin(), IsSuperadmin())
-async def set_admin_callback(
-    query: CallbackQuery,
-    state: FSMContext
-):
-    await query.message.answer(
-        text=_('get_telegram_id')
-    )
+async def set_admin_callback(query: CallbackQuery, state: FSMContext):
+    await query.message.answer(text=_("get_telegram_id"))
 
     await state.set_state(SetAdminState.telegram_id)
 
 
-__all__ = ['router']
+__all__ = ["router"]

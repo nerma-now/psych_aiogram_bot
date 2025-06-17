@@ -5,43 +5,28 @@ from sqlalchemy.sql import expression
 from infrastructure.database.mixins import (
     IdPkMixin,
     CreatedAtPkMixin,
-    LastUpdatedAtPkMixin
+    LastUpdatedAtPkMixin,
 )
 
 from .base import Base
 
 
-class SubscriptionPlan(IdPkMixin,
-           CreatedAtPkMixin,
-           LastUpdatedAtPkMixin,
-           Base):
-    __tablename__ = 'subscription_plans'
+class SubscriptionPlan(IdPkMixin, CreatedAtPkMixin, LastUpdatedAtPkMixin, Base):
+    __tablename__ = "subscription_plans"
 
     is_activated: Mapped[bool] = mapped_column(
-        Boolean,
-        server_default=expression.true(),
-        nullable=False
+        Boolean, server_default=expression.true(), nullable=False
     )
     is_flexible: Mapped[bool] = mapped_column(
-        Boolean,
-        server_default=expression.false(),
-        nullable=False
+        Boolean, server_default=expression.false(), nullable=False
     )
-    title: Mapped[str] = mapped_column(
-        String(256),
-        nullable=False
+    is_premium: Mapped[bool] = mapped_column(
+        Boolean, server_default=expression.false(), nullable=True
     )
-    description: Mapped[str] = mapped_column(
-        String(2048),
-        nullable=False
-    )
-    price: Mapped[int] = mapped_column(
-        BigInteger,
-        nullable=False
-    )
-    total_classes_monthly: Mapped[int] = mapped_column(
-        Integer,
-        nullable=False
-    )
+    title: Mapped[str] = mapped_column(String(256), nullable=False)
+    description: Mapped[str] = mapped_column(String(2048), nullable=False)
+    price: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    total_classes_monthly: Mapped[int] = mapped_column(Integer, nullable=False)
 
-__all__ = ['SubscriptionPlan']
+
+__all__ = ["SubscriptionPlan"]

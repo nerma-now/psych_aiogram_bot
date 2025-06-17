@@ -20,6 +20,9 @@ class UserMiddleware(BaseMiddleware):
             value=event.from_user.id
         )
 
+        if user is not None and not user.is_activated:
+            return
+
         data['user'] = user
 
         return await handler(event, data)

@@ -1,0 +1,2 @@
+class CooldownException(Exception):
+    pass

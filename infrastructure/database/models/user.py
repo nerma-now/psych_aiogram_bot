@@ -5,45 +5,27 @@ from sqlalchemy.sql import expression
 from infrastructure.database.mixins import (
     IdPkMixin,
     CreatedAtPkMixin,
-    LastUpdatedAtPkMixin
+    LastUpdatedAtPkMixin,
 )
 
 from .base import Base
 
 
-class User(IdPkMixin,
-           CreatedAtPkMixin,
-           LastUpdatedAtPkMixin,
-           Base):
-    __tablename__ = 'users'
+class User(IdPkMixin, CreatedAtPkMixin, LastUpdatedAtPkMixin, Base):
+    __tablename__ = "users"
 
-    telegram_id: Mapped[int] = mapped_column(
-        BigInteger,
-        nullable=False,
-        unique=True
-    )
-    name: Mapped[str] = mapped_column(
-        String(128),
-        nullable=True
-    )
+    telegram_id: Mapped[int] = mapped_column(BigInteger, nullable=False, unique=True)
+    name: Mapped[str] = mapped_column(String(128), nullable=True)
     is_activated: Mapped[bool] = mapped_column(
-        Boolean,
-        server_default=expression.true(),
-        nullable=False
+        Boolean, server_default=expression.true(), nullable=False
     )
     is_admin: Mapped[bool] = mapped_column(
-        Boolean,
-        server_default=expression.false(),
-        nullable=False
+        Boolean, server_default=expression.false(), nullable=False
     )
     is_superadmin: Mapped[bool] = mapped_column(
-        Boolean,
-        server_default=expression.false(),
-        nullable=False
+        Boolean, server_default=expression.false(), nullable=False
     )
-    language: Mapped[str] = mapped_column(
-        String,
-        nullable=True
-    )
+    language: Mapped[str] = mapped_column(String, nullable=True)
 
-__all__ = ['User']
+
+__all__ = ["User"]

@@ -10,4 +10,4 @@ class RedisConfig(BaseModel):
     encoding: str = Field(default='utf-8')
     database: str | int = Field(default=0)
 
-__all__ = ['RedisConfig']
+__all__ = ['RedisConfig']   
